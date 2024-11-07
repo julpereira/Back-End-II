@@ -5,7 +5,7 @@ export const historicoIPCA = () => {
 }
 
 export const buscarAno = (anoIPCA) => {
-    return historicoInflacao.filter
+    return historicoInflacao.filter(IPCA => IPCA.ano === anoIPCA); 
 }
 
 export const buscarID = (id) => {
