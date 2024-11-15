@@ -1,7 +1,5 @@
 import express from 'express';
-import { historicoIPCA, buscarAno,  buscarID} from './servicos/servico';
-
-
+import { historicoIPCA, buscarAno,  buscarID} from './servicos/servico.js';
 
 const app = express();
 
@@ -17,8 +15,7 @@ app.get('/ufs', (req, res) => {
   
 app.get('/ufs/:idIPCA', (req, res) => {
     const id = buscarID(req.params.idIPCA);
-  
-    if (uf) {
+    if (id) {
       res.json(uf);
     } else if (isNaN(parseInt(req.params.idIPCA))) {
       res.status(400).send({ "erro": "Requisição inválida" });
