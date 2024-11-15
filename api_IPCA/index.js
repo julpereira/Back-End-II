@@ -5,7 +5,7 @@ const app = express();
 
 app.get('/ufs', (req, res) => {
     const historicoInflacao = req.query.ano;
-    const resultado = historicoInflacao ? buscarAno(historicoInflacao) : buscarAno();
+    const resultado = historicoInflacao ? buscarAno(historicoInflacao) : historicoInflacao();
     if (resultado) {
       res.json(resultado);
     } else {
