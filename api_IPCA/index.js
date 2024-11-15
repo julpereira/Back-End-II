@@ -4,7 +4,7 @@ import { historicoIPCA, buscarAno,  buscarID} from './servicos/servico.js';
 const app = express();
 
 app.get('/ufs', (req, res) => {
-    const historicoInflacao= req.query.ano;
+    const historicoInflacao = req.query.ano;
     const resultado = historicoInflacao ? buscarAno(historicoInflacao) : buscarAno();
     if (resultado) {
       res.json(resultado);
@@ -17,10 +17,8 @@ app.get('/ufs/:idIPCA', (req, res) => {
     const id = buscarID(req.params.idIPCA);
     if (id) {
       res.json(uf);
-    } else if (isNaN(parseInt(req.params.idIPCA))) {
+    }else{(isNaN(parseInt(req.params.idIPCA))) 
       res.status(400).send({ "erro": "Requisição inválida" });
-    } else {
-      res.status(404).send({ "erro": "UF não encontrada" });
     }
 });
 

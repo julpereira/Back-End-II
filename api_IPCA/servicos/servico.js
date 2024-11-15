@@ -1,7 +1,7 @@
 import historicoInflacao from '../dados/dados.js';
 
 export const historicoIPCA = () => {
-    return  historicoInflacao;
+    return historicoInflacao;
 }
 
 export const buscarAno = (anoIPCA) => {
