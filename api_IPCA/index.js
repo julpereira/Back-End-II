@@ -1,5 +1,6 @@
+
 import express from 'express';
-import { historicoIPCA, buscarAno, buscarId, calcularReajuste, validacaoErro } from './servicos/servico.js';
+import { buscarAno, buscarId, calcularReajuste, validacaoErro } from './servicos/servico.js';
 
 const app = express();
 
@@ -19,11 +20,26 @@ app.get('/historicoIPCA/calculo', (req, res) => {
   res.json({ resultado: resultado });
 });
 
+app.get('/historicoIPCA', (req, res) => {
+  const ano = parseInt(req.query.ano);
+
+  if (isNaN(ano)) {
+    res.status(404).json({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+  } else {
+    const resultado = buscarAno(ano);
+    if (resultado.length > 0) {
+      res.json(resultado);
+    } else {
+      res.status(404).json({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+    }
+  }
+});
+
 app.get('/historicoIPCA/:id', (req, res) => {
   const id = parseInt(req.params.id);
 
   if (isNaN(id)) {
-    res.status(404).json({ erro: 'ID inválido' });
+    res.status(404).json({ "erro": "ID inválido" });
     return;
   }
 
@@ -31,25 +47,10 @@ app.get('/historicoIPCA/:id', (req, res) => {
   if (elemento) {
     res.json(elemento);
   } else {
-    res.status(404).json({ erro: 'Elemento não encontrado' });
-  }
-});
-
-app.get('/historicoIPCA', (req, res) => {
-  const ano = parseInt(req.query.ano);
-
-  if (isNaN(ano)) {
-    res.json(historicoIPCA());
-  } else {
-    const resultado = buscarAno(ano);
-    if (resultado.length > 0) {
-      res.json(resultado);
-    } else {
-      res.status(404).json({ erro: 'Nenhum histórico encontrado para o ano especificado' });
-    }
+    res.status(404).json({ "erro": "Elemento não encontrado" });
   }
 });
 
 app.listen(8080, () => {
-  console.log('Servidor iniciado na porta 8080');
+  console.log("Servidor iniciado na porta 8080");
 });

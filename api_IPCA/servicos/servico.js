@@ -4,15 +4,15 @@ export const historicoIPCA = () => {
   return historicoInflacao;
 }
 
-export const buscarId = (id) => {
-  const historicoId = parseInt(id);
-  const historico = historicoInflacao.find(historico => historico.id === historicoId);
+export const buscarAno = (ano) => {
+  const anoHistorico = parseInt(ano);
+  const historico = historicoInflacao.filter(historico => historico.ano === anoHistorico);
   return historico;
 };
 
-export const buscarAno = (ano) => {
-  const anoHistorico = parseInt(ano);
-  const historico = historicoInflacao.filter(IPCA => IPCA.ano === anoHistorico);
+export const buscarId = (id) => {
+  const idHistorico = parseInt(id);
+  const historico = historicoInflacao.find(historico => historico.id === idHistorico);
   return historico;
 };
 
