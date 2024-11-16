@@ -1,27 +1,55 @@
 import express from 'express';
-import { historicoIPCA, buscarAno,  buscarID} from './servicos/servico.js';
+import { historicoIPCA, buscarAno, buscarId, calcularReajuste, validacaoErro } from './servicos/servico.js';
 
 const app = express();
 
-app.get('/ufs', (req, res) => {
-    const historicoInflacao = req.query.ano;
-    const resultado = historicoInflacao ? buscarAno(historicoInflacao) : historicoInflacao();
-    if (resultado) {
+app.get('/historicoIPCA/calculo', (req, res) => {
+  const valor = parseFloat(req.query.valor);
+  const dataInicialMes = parseInt(req.query.mesInicial);
+  const dataInicialAno = parseInt(req.query.anoInicial);
+  const dataFinalMes = parseInt(req.query.mesFinal);
+  const dataFinalAno = parseInt(req.query.anoFinal);
+
+  if (validacaoErro(valor, dataInicialMes, dataInicialAno, dataFinalMes, dataFinalAno)) {
+    res.status(400).json({ erro: 'Parâmetros inválidos' });
+    return;
+  }
+
+  const resultado = calcularReajuste(valor, dataInicialMes, dataInicialAno, dataFinalMes, dataFinalAno);
+  res.json({ resultado: resultado });
+});
+
+app.get('/historicoIPCA/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if (isNaN(id)) {
+    res.status(404).json({ erro: 'ID inválido' });
+    return;
+  }
+
+  const elemento = buscarId(id);
+  if (elemento) {
+    res.json(elemento);
+  } else {
+    res.status(404).json({ erro: 'Elemento não encontrado' });
+  }
+});
+
+app.get('/historicoIPCA', (req, res) => {
+  const ano = parseInt(req.query.ano);
+
+  if (isNaN(ano)) {
+    res.json(historicoIPCA());
+  } else {
+    const resultado = buscarAno(ano);
+    if (resultado.length > 0) {
       res.json(resultado);
     } else {
-      res.status(404).send({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+      res.status(404).json({ erro: 'Nenhum histórico encontrado para o ano especificado' });
     }
-  });
-  
-app.get('/ufs/:idIPCA', (req, res) => {
-    const id = buscarID(req.params.idIPCA);
-    if (id) {
-      res.json(uf);
-    }else{(isNaN(parseInt(req.params.idIPCA))) 
-      res.status(400).send({ "erro": "Requisição inválida" });
-    }
+  }
 });
 
 app.listen(8080, () => {
-    console.log('Servidor iniciado na porta 8080');
+  console.log('Servidor iniciado na porta 8080');
 });
