@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { buscarAno, buscarId, calcularReajuste, validacaoErro } from './servicos/servico.js';
+import { buscarAno, buscarId, calcularReajuste, historicoIPCA, validacaoErro } from './servicos/servico.js';
 
 const app = express();
 
@@ -21,19 +21,25 @@ app.get('/historicoIPCA/calculo', (req, res) => {
 });
 
 app.get('/historicoIPCA', (req, res) => {
-  const ano = parseInt(req.query.ano);
+  const ano = req.query.ano ? parseInt(req.query.ano) : null;
 
-  if (isNaN(ano)) {
-    res.status(404).json({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+  if (!ano) {
+    const historicoInflacao = historicoIPCA();
+    res.json(historicoInflacao);
   } else {
-    const resultado = buscarAno(ano);
-    if (resultado.length > 0) {
-      res.json(resultado);
+    if (isNaN(ano)) {
+      res.status(400).json({ "erro": "Ano inválido fornecido" });
     } else {
-      res.status(404).json({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+      const resultado = buscarAno(ano);
+      if (resultado.length > 0) {
+        res.json(resultado);
+      } else {
+        res.status(404).json({ "erro": "Nenhum histórico encontrado para o ano especificado" });
+      }
     }
   }
 });
+
 
 app.get('/historicoIPCA/:id', (req, res) => {
   const id = parseInt(req.params.id);
