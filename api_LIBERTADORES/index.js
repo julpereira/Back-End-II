@@ -1,30 +1,28 @@
 import express from 'express';
 // import pool from './servico/conexao.js';
-import { retornaCampeonatos, retornaCampeonatosID ,retornaCampeonatosAno } from './servico/retornaCampeonatos_servico.js';
-
-
+import { retornaCampeonatos, retornaCampeonatosID ,retornaCampeonatosAno, retornaCampeonatosTime } from './servico/retornaCampeonatos_servico.js';
 
 
 const app = express();
 
 app.get('/campeonatos', async (req, res) => {
     let campeonatos;
-
     const ano = req.query.ano;
+    const time = req.query.time;
 
-    if (typeof ano === 'undefined') {
+    if (typeof ano === 'undefined' && typeof time === 'undefined') {
         campeonatos = await retornaCampeonatos();
-    } else {
-        campeonatos = await retornaCampeonatosAno(parseInt(ano));
+    } else if (typeof ano !== 'undefined') {
+        campeonatos = await retornaCampeonatosAno(ano);
+    
+    }else if (typeof time !== 'undefined') {
+        campeonatos = await retornaCampeonatosTime(time);
     }
-
     if (campeonatos.length > 0) {
         res.json(campeonatos);
-    } else { 
+    }   else { 
         res.status(404).json({ Mensagem: "Nenhum campeonato encontrado"})};
-
-
-})
+});
 
 app.get('/campeonatos/:id', async (req, res) => {
     const id = parseInt(req.params.id);
