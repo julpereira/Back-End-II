@@ -6,4 +6,4 @@ export async function retornaCampeonatos() {
     const campeonatos = campeonatos_tb[0];
     conexao.release();
     return campeonatos;
-}
+} 
