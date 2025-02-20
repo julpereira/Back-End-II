@@ -8,6 +8,7 @@ import { deletaCampeonatos } from './servico/deletaCampeonatos_servico.js';
 
 const app = express();
 app.use(cors());
+
 app.use(express.json()); //Suporte para JSON no corpo da requisição
 
 app.delete('/campeonatos/:id', async (req,res) => {
